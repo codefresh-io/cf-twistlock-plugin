@@ -21,7 +21,7 @@ until [ "$SCAN_FINISH_STATUS" = "completed" ]; do
     msg "Scan completed"
   else
     SCAN_FINISH_STATUS="Running scan"
-    msg $SCAN_FINISH_STATUS
+    msg "$SCAN_FINISH_STATUS"
   fi
 done
 
