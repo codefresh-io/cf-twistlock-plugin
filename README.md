@@ -1,14 +1,17 @@
 # cf-twistlock-plugin
-Codefresh Twistlock Plugin
+## Codefresh Twistlock Plugin
 
 Dockerhub repo: https://hub.docker.com/r/codefresh/cfstep-twistlock/tags/
+
+Plugin that allow users to perform Twistlocl Security Scans on their images.
+
+This plugin **does not** require access to Docker Daemon.
 
 
 ## Prerequisites:
 
-Codefresh Subscription - https://codefresh.io/
-
-Twistlock Subscription - https://www.twistlock.com/
+- Codefresh Subscription - https://codefresh.io/
+- Twistlock Subscription - https://www.twistlock.com/
 
 ## Options
 These options are set as Environment Variables at your pipeline (either at Pipeline configuraion, and/or Step definition)
@@ -73,9 +76,11 @@ TL_CONSOLE_HOSTNAME=169.254.169.254
 TL_CONSOLE_PORT=8083
 TL_CONSOLE_USERNAME=myuser
 TL_CONSOLE_PASSWORD=mypassword
-TL_COMPLIANCE_THRESHOLD=medium
-TL_VULNERABILITY_THRESHOLD=high
+TL_COMPLIANCE_THRESHOLD=critical
+TL_VULNERABILITY_THRESHOLD=critical
 ```
+
+For this example, we're being permissive (critical for both thresholds). Of course those values can be set to any of the other options.
 
 #### Pipeline YAML (Codefresh.yml)
 
