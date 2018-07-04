@@ -6,12 +6,15 @@ err() { echo -e "ERR---> $1" ; exit 1; }
 
 #printenv
 JSON_PAYLOAD={\"tag\":{\"registry\":\"$TL_REGISTRY\",\"repo\":\"$TL_IMAGE_NAME\",\"tag\":\"$TL_IMAGE_TAG\"}}
-echo $JSON_PAYLOAD
+SETTINGS=$(echo $JSON_PAYLOAD | jq ".tag" )
+msg "Settings used:\n$SETTINGS"
 
-curl -X POST -k \
+curl -X POST -k -s \
   -u $TL_CONSOLE_USERNAME:$TL_CONSOLE_PASSWORD \
   -H 'Content-Type: application/json' \
   -d $JSON_PAYLOAD https://$TL_CONSOLE_HOSTNAME:$TL_CONSOLE_PORT/api/v1/registry/scan
+
+msg "Security Scan initiated"
 
 until [ "$SCAN_FINISH_STATUS" = "completed" ]; do 
   sleep 2
@@ -32,15 +35,15 @@ msg "Report Downloaded"
 COMPLIANCE_ISSUES=$(cat TL_report_$REPORT_NAME.json | jq ".[0].info.complianceDistribution.$TL_COMPLIANCE_THRESHOLD")
 CVEVULNERABILITY_ISSUES=$(cat TL_report_$REPORT_NAME.json | jq ".[0].info.cveVulnerabilityDistribution.$TL_VULNERABILITY_THRESHOLD")
 if [ $COMPLIANCE_ISSUES -gt 0 ]; then 
-  msg "COMPLIANCE_THRESHOLD EXEECED = $COMPLIANCE_ISSUES $TL_COMPLIANCE_THRESHOLD-severity issue(s) found"
+  err "COMPLIANCE_THRESHOLD EXEECED = $COMPLIANCE_ISSUES $TL_COMPLIANCE_THRESHOLD-severity issue(s) found"
   exit 1
 else
-  echo "COMPLIANCE CHECK=PASSED"
+  msg "COMPLIANCE CHECK => PASSED"
 fi
 if [ $CVEVULNERABILITY_ISSUES -gt 0 ]; then 
-  echo "VULNERABILITY_THRESHOLD EXEECED = $CVEVULNERABILITY_ISSUES $VULNERABILITY_THRESHOLD-severity issue(s) found"
+  err "VULNERABILITY_THRESHOLD EXEECED = $CVEVULNERABILITY_ISSUES $VULNERABILITY_THRESHOLD-severity issue(s) found"
   exit 1
 else 
-  echo "CVEVULNERABILITY CHECK=PASSED"
+  msg "CVEVULNERABILITY CHECK => PASSED"
 fi
 
