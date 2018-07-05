@@ -3,7 +3,7 @@
 
 Dockerhub repo: https://hub.docker.com/r/codefresh/cfstep-twistlock/tags/
 
-The Docker images uses the Twistlock API v2.3: https://twistlock.desk.com/customer/en/portal/articles/2912404-twistlock-api-2-3
+The Docker image uses the Twistlock API v2.3: https://twistlock.desk.com/customer/en/portal/articles/2912404-twistlock-api-2-3
 
 Plugin that allow users to perform Twistlocl Security Scans on their images.
 
