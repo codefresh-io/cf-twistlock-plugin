@@ -3,6 +3,8 @@
 
 Dockerhub repo: https://hub.docker.com/r/codefresh/cfstep-twistlock/tags/
 
+The Docker images uses the Twistlock API v2.3: https://twistlock.desk.com/customer/en/portal/articles/2912404-twistlock-api-2-3
+
 Plugin that allow users to perform Twistlocl Security Scans on their images.
 
 This plugin **does not** require access to Docker Daemon.
@@ -28,6 +30,11 @@ To use an ENVIRONMENT VARIABLE you need to add the variables to your Codefresh P
 | TL_REGISTRY | null | string | Yes | Registry URL. (e.g.: docker.io, cfcr.io). This should match the Registry URL set at Twistlock Console |
 | TL_IMAGE_NAME | null | string | Yes | The full image name (excluding the registry URL) (e.g.: myrepo/myimage) |
 | TL_IMAGE_TAG | null | string | Yes | The tag of the image to scan. |
+
+>  **Threshold description**
+>
+> - low: the most **restrictive**. When thresholds are set to this level, the scanning process will fail with any issue or vulnearability found.
+> - critical: the most **permissive**. When thresholds are set to this level, the scanning process will fail only if a critical issue or vulnearability is found (or a combination of lower level vulnerabilities that summed up result in a risk score higher than 1000).
 
 
 
