@@ -1,11 +1,10 @@
 # cf-twistlock-plugin
 ## Codefresh Twistlock Plugin
-
 Dockerhub repo: https://hub.docker.com/r/codefresh/cfstep-twistlock/tags/
 
 The Docker image uses the Twistlock API v2.3: https://twistlock.desk.com/customer/en/portal/articles/2912404-twistlock-api-2-3
 
-Plugin that allow users to perform Twistlocl Security Scans on their images.
+Plugin that allow users to perform Twistlock Security Scans on images.
 
 This plugin **does not** require access to Docker Daemon.
 
@@ -44,7 +43,7 @@ Summary: in this example, we're going to scan an image built by Codefresh.
 
 The image's Dockerfile is defined in this sample repo: https://github.com/francisco-codefresh/twistlock_demo
 
-For scanning purposes, the image will be pushed to a temporary registry, which can be seen as a "Registry of unscanned images". Once there, we can initiate the scan in Twistlock console.
+For scanning purposes, the image will be pushed to a temporary registry, which can be considered as a "Registry of unscanned images". Once there, we can initiate the scan in Twistlock console.
 
 In order for this to work, the registry to scan must be previously added to TwistlocK Console.
 
@@ -59,18 +58,11 @@ In your Twistlock dashboard go to `#!/defend/vulnerabilities/registry` . And add
 In this case, we are going to use Docker Hub as our temporary registry. And these are the settings used:
 
 - Version: Docker Registry v2
-
 - Registry: docker.io
-
 - Repository name: franciscocodefresh/twistlockdemo-temp
-
 - Tag: <empty>
-
 - Username: <your_user_name>
-
 - Password: <your_password>
-
-  
 
 ### Set up a pipeline with the following configuration
 
@@ -89,7 +81,7 @@ TL_VULNERABILITY_THRESHOLD=critical
 
 For this example, we're being permissive (critical for both thresholds). Of course those values can be set to any of the other options.
 
-#### Pipeline YAML (Codefresh.yml)
+#### Pipeline YAML (codefresh.yml)
 
 ```yaml
 version: '1.0'
@@ -102,7 +94,7 @@ steps:
     tag: '${{CF_SHORT_REVISION}}'
     dockerfile: Dockerfile
 
-  PushingToTEMPDockerRegistry:
+  PushingToTempDockerRegistry:
     title: Pushing to Temporal Docker Registry (for unscanned images -> to be scanned)
     type: push
     candidate: '${{BuildingDockerImage}}'
@@ -110,7 +102,7 @@ steps:
     tags: 
       - '${{CF_SHORT_REVISION}}'
       
-  TL_Scan:
+  TLScan:
     title: Twistlock Scan
     image: codefresh/cfstep-twistlock
     environment:
