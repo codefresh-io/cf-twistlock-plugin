@@ -106,7 +106,6 @@ steps:
     title: Building Docker Image
     type: build
     image_name: franciscocodefresh/twistlockdemo
-    working_directory: ./
     tag: '${{CF_SHORT_REVISION}}'
     dockerfile: Dockerfile
       
@@ -178,7 +177,6 @@ steps:
     title: Building Docker Image
     type: build
     image_name: franciscocodefresh/twistlockdemo
-    working_directory: ./
     tag: '${{CF_SHORT_REVISION}}'
     dockerfile: Dockerfile
 
