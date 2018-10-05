@@ -14,22 +14,29 @@ curl -X POST -k -s \
   -d $JSON_PAYLOAD https://$TL_CONSOLE_HOSTNAME:$TL_CONSOLE_PORT/api/v1/registry/scan
 
 msg "Security Scan initiated"
-
-until [ "$SCAN_FINISH_STATUS" = "completed" ]; do 
+TIMEOUT_SECS=$((1 * 60))
+until [[ "$SCAN_FINISH_STATUS" = "completed" ]] || [[ $TIMEOUT_SECS -lt 0 ]]; do
   sleep 2
+  TIMEOUT_SECS=$((TIMEOUT_SECS-2))
   scan_current_status=$(curl -X GET -k -s -u $TL_CONSOLE_USERNAME:$TL_CONSOLE_PASSWORD -G https://$TL_CONSOLE_HOSTNAME:$TL_CONSOLE_PORT/api/v1/registry -d search=$TL_IMAGE_NAME:$TL_IMAGE_TAG -d limit=1 | cut -c5-6)
   if [ "$scan_current_status" = id ]; then  
     SCAN_FINISH_STATUS="completed"
     msg "Scan completed"
-  else
+  elif [ "$scan_current_status" = '' ]; then  
     SCAN_FINISH_STATUS="Running scan"
     msg "$SCAN_FINISH_STATUS"
+  else
+    err $scan_current_status
   fi
 done
 
+if [ $TIMEOUT_SECS -le 2 ]; then 
+  err "Timeout while trying to scan the image, or image was not found in registry"
+fi
+
 REPORT_NAME=$(echo ''$TL_IMAGE_NAME:$TL_IMAGE_TAG | tr /: _)
 curl -X GET -ks -u $TL_CONSOLE_USERNAME:$TL_CONSOLE_PASSWORD -G https://$TL_CONSOLE_HOSTNAME:$TL_CONSOLE_PORT/api/v1/registry -d search=$TL_IMAGE_NAME:$TL_IMAGE_TAG -d limit=1 -o TL_report_$REPORT_NAME.json
-msg "Report Downloaded"
+msg "Report Downloaded to $(pwd)/TL_report_$REPORT_NAME.json"
 
 COMPLIANCE_RISK_SCORE=$(cat TL_report_$REPORT_NAME.json | jq ".[0].info.complianceRiskScore")
 VULNERABILITY_RISK_SCORE=$(cat TL_report_$REPORT_NAME.json | jq ".[0].info.vulnerabilityRiskScore")
@@ -75,13 +82,11 @@ esac
 
 if [ $COMPLIANCE_RISK_SCORE -ge $TL_COMPLIANCE_THRESHOLD ]; then 
   err "COMPLIANCE_THRESHOLD ($TL_COMPLIANCE_THRESHOLD) EXEECED => $COMPLIANCE_VULNERABILITIES_CNT issue(s) found. COMPLIANCE_RISK_SCORE = $COMPLIANCE_RISK_SCORE (lower is better)"
-  exit 1
 else
   msg "COMPLIANCE CHECK => PASSED"
 fi
 if [ $VULNERABILITY_RISK_SCORE -ge $TL_VULNERABILITY_THRESHOLD ]; then 
   err "VULNERABILITY_THRESHOLD ($TL_VULNERABILITY_THRESHOLD) EXEECED => $CVE_VULNERABILITIES_CNT issue(s) found. VULNERABILITY_RISK_SCORE = $VULNERABILITY_RISK_SCORE (lower is better)"
-  exit 1
 else 
   msg "CVEVULNERABILITY CHECK => PASSED"
 fi
