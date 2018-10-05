@@ -15,6 +15,7 @@ curl -X POST -k -s \
 
 if [ $? -eq 0 ];then
    err "ERROR"
+fi
 
 msg "Security Scan initiated"
 TIMEOUT_SECS=$((10 * 60))
