@@ -14,7 +14,7 @@ curl -X POST -k -s \
   -d $JSON_PAYLOAD https://$TL_CONSOLE_HOSTNAME:$TL_CONSOLE_PORT/api/v1/registry/scan
 
 if [ $? -eq 0 ];then
-   err "ERROR"
+   err "Security Scan could not be initiated"
 fi
 
 msg "Security Scan initiated"
@@ -94,4 +94,3 @@ if [ $VULNERABILITY_RISK_SCORE -ge $TL_VULNERABILITY_THRESHOLD ]; then
 else 
   msg "CVEVULNERABILITY CHECK => PASSED"
 fi
-
