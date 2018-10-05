@@ -13,7 +13,8 @@ curl -X POST -k -s \
   -H 'Content-Type: application/json' \
   -d $JSON_PAYLOAD https://$TL_CONSOLE_HOSTNAME:$TL_CONSOLE_PORT/api/v1/registry/scan
 
-if [ $? -eq 0 ];then
+OUT=$?
+if [ $OUT -ne 0 ];then
    err "Security Scan could not be initiated"
 fi
 
