@@ -13,6 +13,9 @@ curl -X POST -k -s \
   -H 'Content-Type: application/json' \
   -d $JSON_PAYLOAD https://$TL_CONSOLE_HOSTNAME:$TL_CONSOLE_PORT/api/v1/registry/scan
 
+if [ $? -eq 0 ];then
+   err "ERROR"
+
 msg "Security Scan initiated"
 TIMEOUT_SECS=$((10 * 60))
 until [[ "$SCAN_FINISH_STATUS" = "completed" ]] || [[ $TIMEOUT_SECS -lt 0 ]]; do
