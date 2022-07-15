@@ -6,7 +6,7 @@ The Docker image uses the Twistlock API v2.3: https://twistlock.desk.com/custome
 
 Plugin that allow users to perform Twistlock Security Scans on images.
 
-This plugin **does not** require access to Docker Daemon.
+This plugin **does not** require access to Docker Daemon
 
 
 ## Prerequisites:
